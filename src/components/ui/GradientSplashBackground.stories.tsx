@@ -18,6 +18,23 @@ const meta: Meta<typeof GradientSplashBackground> = {
       control: 'text',
       description: 'Additional CSS classes for the container',
     },
+    animated: {
+      control: 'boolean',
+      description: 'Enable/disable background animation',
+      defaultValue: true, // Reflect the component default in Storybook UI
+    },
+    items: {
+      control: 'select',
+      options: ['start', 'end', 'center', 'baseline', 'stretch'],
+      description: 'Controls align-items',
+      defaultValue: 'center',
+    },
+    justify: {
+      control: 'select',
+      options: ['start', 'end', 'center', 'between', 'around', 'evenly'],
+      description: 'Controls justify-content',
+      defaultValue: 'center',
+    },
   },
   tags: ['autodocs'],
 };
@@ -25,32 +42,48 @@ const meta: Meta<typeof GradientSplashBackground> = {
 export default meta;
 type Story = StoryObj<typeof GradientSplashBackground>;
 
-// Default story using default colors - forcing height via inline style
+// Default story - centered, animated
 export const Default: Story = {
   args: {
-    children: <span className="text-white text-4xl font-bold">Hello World!</span>,
-    // We can remove className here if we are forcing style
-    // className: 'h-80', 
+    children: <span className="text-white text-4xl font-bold">Hello World! (Centered)</span>,
+    // items: 'center', // Default
+    // justify: 'center', // Default
+    // animated: true, // Default
   },
-  // Use the render function to apply an inline style
-  render: (args) => (
-    <GradientSplashBackground {...args} style={{ minHeight: '300px', border: '2px solid red' }} />
-    // Added red border for visibility
-  ),
 };
 
-// Story with custom colors
+// Top-left alignment example
+export const TopLeft: Story = {
+  args: {
+    children: <span className="text-white text-2xl p-4">Top Left</span>, // Added padding for visibility
+    items: 'start',
+    justify: 'start',
+    animated: false, // Disabled animation for clarity
+  },
+};
+
+// Story with animation explicitly disabled
+export const NotAnimated: Story = {
+  args: {
+    children: <span className="text-white text-4xl font-bold">Hello World! (Static)</span>,
+    animated: true,
+    // items: 'center', // Default
+    // justify: 'center', // Default
+  },
+};
+
+// Story with custom colors (centered, animated by default)
 export const CustomColors: Story = {
   args: {
-    colors: ['#4ade80', '#facc15', '#22d3ee', '#f472b6'], // Example: Green, Yellow, Cyan, Pink
-    children: <span className="text-gray-900 text-3xl italic">Custom Gradient</span>,
+    colors: ['#4ade80', '#facc15', '#22d3ee', '#f472b6'],
+    children: <span className="text-gray-900 text-3xl italic">Custom Gradient (Centered)</span>,
   },
 };
 
-// Story showing how to adjust container size via className
+// Story showing how to adjust container size via className (centered, animated by default)
 export const DifferentSize: Story = {
   args: {
-    children: <span className="text-white text-xl">Smaller Container</span>,
-    className: 'h-48 w-96', // Override default height and width
+    children: <span className="text-white text-xl">Smaller Container (Centered)</span>,
+    className: 'h-48 w-96',
   },
 };
