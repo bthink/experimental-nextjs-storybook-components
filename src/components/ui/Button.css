@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles removed for basic button */ 
+
+@layer components {
+  /* Base container for animated button - styles applied via class in JSX */
+  .animated-border-button {
+    /* All @apply utilities removed */
+  }
+
+  /* The rotating gradient pseudo-element */
+  .animated-border-button::before {
+    content: '';
+    /* Keep only non-Tailwind properties */
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    /* @apply bg-gradient-conic from-transparent via-transparent via-50% to-yellow-400; - Will this work? Let's try standard CSS */
+    background-image: conic-gradient(from 180deg at 50% 50%, transparent 0deg, transparent 180deg, #FBBF24 360deg); /* Equivalent of bg-gradient-conic ... to-yellow-400 */
+    animation: rotate 4s linear infinite;
+    z-index: -1;
+  }
+
+  /* The inner span for content background - styles applied via class in JSX */
+  .animated-border-button-inner {
+     /* All @apply utilities removed */
+     /* Keep only non-Tailwind properties? z-index is a utility */
+     z-index: 1; /* Keep z-index */
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
