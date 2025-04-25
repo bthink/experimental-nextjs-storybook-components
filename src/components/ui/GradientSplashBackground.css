@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animate-float-gradient {
+    /* Apply the animation */
+    /* We target background-position since the background-image is complex */
+    animation: floatGradient 15s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes floatGradient {
+  0% {
+    background-position: 0% 0%;
+  }
+  /* Add intermediate steps for smoother visual flow if needed */
+  50% {
+     background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+} 
