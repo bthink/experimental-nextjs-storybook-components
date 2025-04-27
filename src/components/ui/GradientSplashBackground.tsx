@@ -1,5 +1,4 @@
 import React from "react";
-import "./GradientSplashBackground.css"; // Import the CSS file
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -8,9 +7,24 @@ const cn = (...inputs: (string | undefined | null | false)[]) => {
   return twMerge(clsx(inputs));
 }
 
+// Define the keyframe animation style
+const floatGradientAnimation = `
+  @keyframes floatGradient {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
+`;
+
 interface GradientSplashBackgroundProps {
   /** Array of CSS color strings to use in the gradient */
-  colors: string[];
+  colors?: string[];
   /** Content to render on top of the background */
   children: React.ReactNode; 
   /** Optional additional class names */
@@ -55,34 +69,51 @@ const GradientSplashBackground: React.FC<GradientSplashBackgroundProps> = ({
     ...style, // Merge incoming style prop
   };
 
-  // Conditionally add animation class
-  const animationClass = animated ? 'animate-float-gradient' : '';
+  // Construct animation style for inline styling when animated
+  const animationStyle = animated ? {
+    animation: 'floatGradient 15s ease-in-out infinite alternate'
+  } : {};
 
-  // Construct alignment classes dynamically
-  const alignmentClasses = cn(
-    `items-${items}`,
-    `justify-${justify}`
-  );
+  // Remove the flex alignment from Tailwind classes
+  const basePositionClasses = `absolute inset-0`; 
+
+  // Define inline styles for flex centering based on props
+  const contentContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: items, // Use prop value directly (maps well to CSS)
+    justifyContent: justify, // Use prop value directly (maps well to CSS)
+    height: '100%' // Explicitly set height to ensure vertical alignment works
+  };
 
   return (
-    <div
-      // Remove hardcoded alignment, add dynamic classes
-      className={cn(
-        'relative overflow-hidden min-h-[300px] flex w-full rounded-lg', 
-        alignmentClasses, // Add dynamic alignment
-        animationClass, 
-        className // Merge incoming className last
+    <>
+      {/* Add the keyframe definition with a style tag */}
+      {animated && (
+        <style dangerouslySetInnerHTML={{ __html: floatGradientAnimation }} />
       )}
-      style={combinedStyle}
-    >
-      {/* Optional: Add a subtle grain/noise overlay if desired */}
-      {/* <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-soft-light"></div> */}
       
-      {/* Render children centered on top */}
-      <div className="z-10">
-        {children}
+      <div
+        className={cn(
+          'relative overflow-hidden min-h-[300px] w-full rounded-lg',
+          className
+        )}
+        style={{
+          ...combinedStyle,
+          ...animationStyle
+        }}
+      >
+        {/* Optional noise overlay */}
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-soft-light"></div>
+        
+        {/* Content container with inline styles for centering */}
+        <div 
+          className={cn("z-10", basePositionClasses)} 
+          style={contentContainerStyle} // Apply inline styles
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
